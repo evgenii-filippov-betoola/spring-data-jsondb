@@ -1,12 +1,14 @@
 package org.mambofish.spring.data.jsondb.repository.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author vince
@@ -29,7 +31,7 @@ public class RepositoryTest {
     public void shouldFindContact() {
 
         contactRepository.save(new Contact("jane"));
-        Contact contact = contactRepository.findOne("jane");
+        Contact contact = contactRepository.findById("jane").orElse(null);
         assertEquals("jane", contact.getId());
 
     }
@@ -39,12 +41,12 @@ public class RepositoryTest {
 
         contactRepository.save(new Contact("jane"));
 
-        Contact contact = contactRepository.findOne("jane");
+        Contact contact = contactRepository.findById("jane").orElse(null);
         contact.setName("jennifer");
         contactRepository.save(contact);
 
 
-        contact = contactRepository.findOne("jane");
+        contact = contactRepository.findById("jane").orElse(null);
         assertEquals("jennifer", contact.getName());
 
     }
@@ -54,15 +56,15 @@ public class RepositoryTest {
 
         Contact contact = contactRepository.save(new Contact("jane"));
         contactRepository.delete(contact);
-        assertFalse(contactRepository.exists("jane"));
+        assertFalse(contactRepository.existsById("jane"));
     }
 
     @Test
     public void shouldDeleteContactById() {
 
         Contact contact = contactRepository.save(new Contact("jane"));
-        contactRepository.delete(contact.getId());
-        assertFalse(contactRepository.exists("jane"));
+        contactRepository.deleteById(contact.getId());
+        assertFalse(contactRepository.existsById("jane"));
     }
 
     @Test
@@ -71,13 +73,13 @@ public class RepositoryTest {
         contactRepository.save(new Contact("jane"));
         contactRepository.save(new Contact( "pete"));
 
-        assertTrue(contactRepository.exists("jane"));
-        assertTrue(contactRepository.exists("pete"));
+        assertTrue(contactRepository.existsById("jane"));
+        assertTrue(contactRepository.existsById("pete"));
 
         contactRepository.deleteAll();
 
-        assertFalse(contactRepository.exists("jane"));
-        assertFalse(contactRepository.exists("pete"));
+        assertFalse(contactRepository.existsById("jane"));
+        assertFalse(contactRepository.existsById("pete"));
 
     }
 
